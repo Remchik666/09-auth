@@ -5,7 +5,8 @@ import type { NewNote } from "../../types/note";
 import { useNoteDraftStore } from "@/lib/store/noteStore";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createNote } from "@/lib/api";
+import { createNote } from "@/lib/api/clientApi";
+
 
 export default function NoteForm() {
     const fieldId = useId();
@@ -81,6 +82,10 @@ export default function NoteForm() {
                     <option value="Personal">Personal</option>
                     <option value="Meeting">Meeting</option>
                     <option value="Shopping">Shopping</option>
+                    <option value="Ideas">Ideas</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Important">Important</option>
                 </select>
             </div>
 
