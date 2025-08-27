@@ -87,7 +87,6 @@
     text-decoration: none;
     display: inline-block;
     transition: background-color 0.2s ease;
-    line-height: 1.143;
 }
 
 .link:hover {

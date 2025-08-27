@@ -1,32 +1,74 @@
-"use client"
+'use client';
 
-import css from "./TagsMenu.module.css"
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from 'react';
+import css from './TagsMenu.module.css';
+import Link from 'next/link';
+export default function TagsMenu() {
+  const categories = [
+    'All',
+    'Work',
+    'Personal',
+    'Meeting',
+    'Shopping',
+    'Ideas',
+    'Travel',
+    'Finance',
+    'Health',
+    'Important',
+    'Todo',
+  ];
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
 
-const TagsMenu = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
 
-    const tags = ['All', 'Work', 'Personal', 'Meeting', 'Shopping', 'Todo', "Ideas", "Travel", "Finance", "Health", "Important"];
+  const toggleMenu = () => {
+    setIsOpenMenu(prev => !prev);
+  };
 
-    return (
-        <div className={css.menuContainer}>
-            <button className={css.menuButton} onClick={toggle}>
-                Notes ▾
-            </button>
-            {isOpen && (
-            <ul className={css.menuList}>
-                {tags.map((tag) => (
-                <li className={css.menuItem} key={tag} onClick={ () => setIsOpen(false)}>
-                    <Link href={`/notes/filter/${tag}`} className={css.menuLink}>
-                        {tag}
-                    </Link>
-                </li>
-                ))}
-            </ul>)}
-        </div>
-    );
-};
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !buttonRef.current?.contains(event.target as Node)
+      ) {
+        setIsOpenMenu(false);
+      }
+    };
 
-export default TagsMenu;
+    if (isOpenMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpenMenu]);
+  const handleLinkClick = () => {
+    setIsOpenMenu(false);
+  };
+  return (
+    <div className={css.menuContainer}>
+      <button ref={buttonRef} onClick={toggleMenu} className={css.menuButton}>
+        {isOpenMenu ? 'Notes ▴' : 'Notes ▾'}
+      </button>
+      {isOpenMenu && (
+        <ul ref={menuRef} className={css.menuList}>
+          {categories.map(category => (
+            <li key={category} className={css.menuItem}>
+              <Link
+                href={`/notes/filter/${category}`}
+                className={css.menuLink}
+                onClick={handleLinkClick}
+              >
+                {category}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}

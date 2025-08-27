@@ -1,49 +1,53 @@
-import { fetchServerNotebyId } from "@/lib/api/serverApi";
-import NoteDetailsClient from "./NoteDetails.client";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import { Metadata } from "next";
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from '@tanstack/react-query';
 
+import NoteDetailsClient from './NoteDetails.client';
+import { Metadata } from 'next';
+import { fetchNoteById } from '@/lib/api/serverApi';
 
-interface Props {
-    params: Promise<{ id: string }>;
+type Props = {
+  params: Promise<{ id: string }>;
 };
 
-export async function generateMetadata({ params }: Props):Promise<Metadata> {
-    const { id } = await params;
-    const note = await fetchServerNotebyId(id);
-    return {
-        title: `Note: ${note.title}`,
-        description: note.content.slice(0, 20),
-        openGraph: {
-            title: `Note: ${note.title}`,
-            description: note.content.slice(0, 50),
-            url: `https://notehub.com/notes/${id}`,
-            images: [
-            {
-                url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-                width: 1374,
-                height: 916,
-                alt: "NoteHub logo"
-            },
-        ],
-        }
-    }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const note = await fetchNoteById(id);
+
+  return {
+    title: note.title,
+    description: note.content.slice(0, 30),
+    openGraph: {
+      title: note.title,
+      description: note.content.slice(0, 30),
+      url: `https://notehub.com/notes/${id}`,
+      images: [
+        {
+          url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+          width: 1200,
+          height: 630,
+          alt: `${note.title} notes`,
+        },
+      ],
+    },
+  };
 }
 
 const NoteDetails = async ({ params }: Props) => {
-    const { id } = await params;
-    const queryClient = new QueryClient();
+  const { id } = await params;
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery({
+    queryKey: ['note', id],
+    queryFn: () => fetchNoteById(id),
+  });
 
-    await queryClient.prefetchQuery({
-        queryKey: ["note", id],
-        queryFn: ()=>fetchServerNotebyId(id),
-    })
-
-    return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <NoteDetailsClient />
-        </HydrationBoundary>
-    )
-}
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NoteDetailsClient />
+    </HydrationBoundary>
+  );
+};
 
 export default NoteDetails;

@@ -9,7 +9,7 @@ const Error = ({ error, reset }: ErrorProps) => {
   return (
     <div className={css.conteiner}>
       <p className={css.text}>
-        Could not fetch the filter list of notes. {error.message}
+        Could not fetch the list of notes. {error.message}
       </p>
       <button className={css.reset} onClick={reset}>
         reset

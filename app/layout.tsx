@@ -1,44 +1,37 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto } from "next/font/google";
-import "./globals.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import TanStackProvider from "@/components/TanStackProvider/TanStackProvider";
-import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+import './globals.css';
+import Header from '@/components/Header/Header';
+import Footer from '@/components/Footer/Footer';
+import TanStackProvider from '@/components/TanStackProvider/TanStackProvider';
+import AuthProvider from '@/components/AuthProvider/AuthProvider';
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-roboto',
+  display: 'swap',
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const fontRoboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-  weight: "variable",
-  display: "auto"
-})
 
 export const metadata: Metadata = {
-  title: "NoteHub",
-  description: "Notes Management Service",
+  title: 'Welcome to NoteHub',
+  description:
+    'NoteHub is a simple and efficient application designed for managing personal notes. It helps keep your thoughts organized and accessible in one place, whether you are at home or on the go',
   openGraph: {
-    title: "NoteHub",
-    description: "Notes Management Service",
-    url: "https://notehub.com",
+    title: 'Welcome to NoteHub',
+    description:
+      'NoteHub is a simple and efficient application designed for managing personal notes. It helps keep your thoughts organized and accessible in one place, whether you are at home or on the go',
+    url: 'https://notehub.com',
     images: [
       {
-        url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
-        width: 1374,
-        height: 916,
-        alt: "NoteHub logo"
+        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'NoteHub Open Graph Image',
       },
     ],
-  }
+  },
 };
 
 export default function RootLayout({
@@ -50,13 +43,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${fontRoboto.variable}`}>
+      <body className={roboto.variable}>
         <TanStackProvider>
           <AuthProvider>
-            <Header/>
-            {children}
-            {modal}
-            <Footer/>
+            <Header />
+
+            <main>
+              {children}
+              {modal}
+            </main>
+
+            <Footer />
           </AuthProvider>
         </TanStackProvider>
       </body>
